@@ -1,46 +1,48 @@
 #include <iostream>
 #include <fstream>
-#include <cstring>
+#include <string>
 
-using namespace std;
-
-// TODO: Define Sensor struct
-// struct Sensor {
-// };
+struct Sensor {
+    int id;
+    double temperature;
+    double voltage;
+    std::string status;
+};
 
 void print_sensor(int index, int id, double temperature, double voltage, const char* status) {
-    cout << "Sensor[" << index << "]: "
-         << "id=" << id << ", "
-         << "temperature=" << temperature << ", "
-         << "voltage=" << voltage << ", "
-         << "status=" << status << "\n";
+    std::cout << "Sensor[" << index << "]: "
+              << "id=" << id << ", "
+              << "temperature=" << temperature << ", "
+              << "voltage=" << voltage << ", "
+              << "status=" << status << "\n";
 }
 
-int main(int argc, char* argv[]) {
-    if (argc < 2) {
-        cerr << "Usage: " << argv[0] << " <input_file>" << endl;
+int main() {
+    std::ifstream infile("sensors.txt");
+    if (!infile) {
+        std::cerr << "Error opening file.\n";
         return 1;
     }
 
-    ifstream input(argv[1]);
-    if (!input) {
-        cerr << "Error opening " << argv[1] << endl;
-        return 1;
+    int n;
+    infile >> n;
+    infile.ignore();  // Consume the newline
+
+    Sensor* sensors = new Sensor[n];
+
+    for (int i = 0; i < n; ++i) {
+        infile >> sensors[i].id;
+        infile >> sensors[i].temperature;
+        infile >> sensors[i].voltage;
+        infile.ignore();  // Consume newline before reading status
+        std::getline(infile, sensors[i].status);
     }
 
-    int num_sensors;
-    input >> num_sensors;
+    Sensor* ptr = sensors;
+    for (int i = 0; i < n; ++i, ++ptr) {
+        print_sensor(i, ptr->id, ptr->temperature, ptr->voltage, ptr->status.c_str());
+    }
 
-    const int MAX_SENSORS = 10;
-
-    // TODO: Create an array of Sensor
-    // Sensor sensors[MAX_SENSORS];
-
-    // TODO: Read sensor data from input
-    // for (int i = 0; i < num_sensors; i++) {
-    // }
-
-    // TODO: Iterate using a pointer and print sensor data
-
+    delete[] sensors;
     return 0;
 }
