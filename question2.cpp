@@ -29,7 +29,7 @@ int main() {
 
     int n;
     infile >> n;
-    infile.ignore();
+    infile.ignore();  // Ignore newline after number
 
     Rectangle* plates = new Rectangle[n];
 
@@ -38,7 +38,7 @@ int main() {
         infile >> plates[i].height;
         infile >> plates[i].thickness;
         infile >> plates[i].density;
-        infile.ignore();  // consume newline before reading material string
+        infile.ignore();  // Ignore newline before reading material
         std::getline(infile, plates[i].material);
     }
 
@@ -55,4 +55,3 @@ int main() {
     delete[] plates;
     return 0;
 }
-
