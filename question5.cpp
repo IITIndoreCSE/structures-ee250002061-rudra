@@ -26,23 +26,28 @@ int main() {
 
     int n;
     infile >> n;
-    infile.ignore();  // Consume the newline
+    infile.ignore();  // Consume the newline after number of sensors
 
+    // Dynamically allocate array for sensors
     Sensor* sensors = new Sensor[n];
 
+    // Read sensor data from the file
     for (int i = 0; i < n; ++i) {
         infile >> sensors[i].id;
         infile >> sensors[i].temperature;
         infile >> sensors[i].voltage;
-        infile.ignore();  // Consume newline before reading status
+        infile.ignore();  // Consume newline before reading status string
         std::getline(infile, sensors[i].status);
     }
 
+    // Use pointer to iterate over the sensors array
     Sensor* ptr = sensors;
     for (int i = 0; i < n; ++i, ++ptr) {
         print_sensor(i, ptr->id, ptr->temperature, ptr->voltage, ptr->status.c_str());
     }
 
+    // Free allocated memory
     delete[] sensors;
+
     return 0;
 }
