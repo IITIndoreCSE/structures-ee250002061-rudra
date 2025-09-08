@@ -1,53 +1,68 @@
 #include <iostream>
 #include <fstream>
-#include <string>
+#include <cstring>
 
+using namespace std;
+// TODO: Define Sensor struct
+// struct Sensor {
+// };
+
+// Define the Sensor struct with id, temperature, voltage, and status
 struct Sensor {
     int id;
     double temperature;
     double voltage;
-    std::string status;
+    char status[20]; // Use a character array for status (string)
 };
 
+// Function to print details of a sensor
 void print_sensor(int index, int id, double temperature, double voltage, const char* status) {
-    std::cout << "Sensor[" << index << "]: "
-              << "id=" << id << ", "
-              << "temperature=" << temperature << ", "
-              << "voltage=" << voltage << ", "
-              << "status=" << status << "\n";
+    cout << "Sensor[" << index << "]: "
+         << "id=" << id << ", "
+         << "temperature=" << temperature << ", "
+         << "voltage=" << voltage << ", "
+         << "status=" << status << "\n";
 }
 
-int main() {
-    std::ifstream infile("sensors.txt");
-    if (!infile) {
-        std::cerr << "Error opening file.\n";
+int main(int argc, char* argv[]) {
+    if (argc < 2) {
+        cerr << "Usage: " << argv[0] << " <input_file>" << endl;
         return 1;
     }
 
-    int n;
-    infile >> n;
-    infile.ignore();  // Consume the newline after number of sensors
-
-    // Dynamically allocate array for sensors
-    Sensor* sensors = new Sensor[n];
-
-    // Read sensor data from the file
-    for (int i = 0; i < n; ++i) {
-        infile >> sensors[i].id;
-        infile >> sensors[i].temperature;
-        infile >> sensors[i].voltage;
-        infile.ignore();  // Consume newline before reading status string
-        std::getline(infile, sensors[i].status);
+    ifstream input(argv[1]);
+    if (!input) {
+        cerr << "Error opening " << argv[1] << endl;
+        return 1;
     }
+ 
+    int num_sensors;
+    input >> num_sensors;
 
-    // Use pointer to iterate over the sensors array
-    Sensor* ptr = sensors;
-    for (int i = 0; i < n; ++i, ++ptr) {
-        print_sensor(i, ptr->id, ptr->temperature, ptr->voltage, ptr->status.c_str());
+    const int MAX_SENSORS = 10;
+    // TODO: Create an array of Sensor
+    // Sensor sensors[MAX_SENSORS];
+    // Create an array of Sensor structs
+    Sensor sensors[MAX_SENSORS];
+
+    // Read sensor data from the input file
+    for (int i = 0; i < num_sensors; i++) {
+        input >> sensors[i].id;
+        input >> sensors[i].temperature;
+        input >> sensors[i].voltage;
+        input >> sensors[i].status;
     }
-
-    // Free allocated memory
-    delete[] sensors;
+    // TODO: Read sensor data from input
+    // for (int i = 0; i < num_sensors; i++) {
+    // }
+    // Pointer to iterate through the array and print sensor data
+    Sensor* sensor_ptr = sensors;
+    // TODO: Iterate using a pointer and print sensor data
+    for (int i = 0; i < num_sensors; i++) {
+        // Use the pointer to access the members of each sensor
+        print_sensor(i, sensor_ptr->id, sensor_ptr->temperature, sensor_ptr->voltage, sensor_ptr->status);
+        sensor_ptr++;  // Move the pointer to the next sensor
+    }
 
     return 0;
 }
