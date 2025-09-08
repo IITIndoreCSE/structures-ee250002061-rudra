@@ -1,58 +1,64 @@
 #include <iostream>
-#include <vector>
-#include <string>
+#include <fstream>
+#include <cstring>
 
-// Define the Rectangle struct
+using namespace std;
+
+// Define the Rectangle struct according to the requirements
 struct Rectangle {
     double width;
     double height;
     double thickness;
     double density;
-    std::string material; // Using std::string for material name
-    double mass;
+    string material;
 };
 
-// Function to print plate information
 void print_plate(int index, double width, double height,
-                 double density, double mass, const std::string& material) {
-    std::cout << "Plate[" << index << "]: "
-              << "width=" << width << ", "
-              << "height=" << height << ", "
-              << "density=" << density << ", "
-              << "mass=" << mass << ", "
-              << "material=" << material << "\n";
+                 double density, double mass, const char* material) {
+    cout << "Plate[" << index << "]: "
+         << "width=" << width << ", "
+         << "height=" << height << ", "
+         << "density=" << density << ", "
+         << "mass=" << mass << ", "
+         << "material=" << material << "\n";
 }
 
-int main() {
-    // Vector to store Rectangle objects
-    std::vector<Rectangle> plates;
+int main(int argc, char* argv[]) {
+    if (argc < 2) {
+        cerr << "Usage: " << argv[0] << " <input_file>" << endl;
+        return 1;
+    }
 
-    // --- Plate 1 ---
-    Rectangle plate1;
-    plate1.width = 2.0;
-    plate1.height = 3.0;
-    plate1.thickness = 0.01;
-    plate1.density = 7850; // kg/m^3 for Steel
-    plate1.material = "Steel";
-    plate1.mass = plate1.width * plate1.height * plate1.thickness * plate1.density;
-    plates.push_back(plate1);
+    ifstream input(argv[1]);
+    if (!input) {
+        cerr << "Error opening " << argv[1] << endl;
+        return 1;
+    }
 
-    // --- Plate 2 ---
-    Rectangle plate2;
-    plate2.width = 1.5;
-    plate2.height = 2.5;
-    plate2.thickness = 0.02;
-    plate2.density = 2700; // kg/m^3 for Aluminium
-    plate2.material = "Aluminium";
-    plate2.mass = plate2.width * plate2.height * plate2.thickness * plate2.density;
-    plates.push_back(plate2);
+    int num_plates;
+    input >> num_plates;
+    input.ignore(); // Skip newline after number of plates
 
-    // Print the information for each plate
-    for (int i = 0; i < plates.size(); ++i) {
-        print_plate(i, plates[i].width, plates[i].height,
-                    plates[i].density, plates[i].mass, plates[i].material);
+    const int MAX_PLATES = 10;
+
+    // Create an array of Rectangle objects to store the plates
+    Rectangle plates[MAX_PLATES];
+
+    // Read plate data from input file
+    for (int i = 0; i < num_plates; i++) {
+        input >> plates[i].width;
+        input >> plates[i].height;
+        input >> plates[i].thickness;
+        input >> plates[i].density;
+        input.ignore(); // Skip newline after density
+        getline(input, plates[i].material); // Read material as a string
+    }
+
+    // Compute the mass for each plate and call print_plate
+    for (int i = 0; i < num_plates; i++) {
+        double mass = plates[i].width * plates[i].height * plates[i].thickness * plates[i].density;
+        print_plate(i, plates[i].width, plates[i].height, plates[i].density, mass, plates[i].material.c_str());
     }
 
     return 0;
 }
-
