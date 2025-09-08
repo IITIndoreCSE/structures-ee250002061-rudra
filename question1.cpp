@@ -1,45 +1,62 @@
 #include <iostream>
 #include <fstream>
-#include <cstring>
+#include <string>
 
-using namespace std;
+// Struct definition
+struct Book {
+    std::string title;
+    std::string author;
+    int year;
+    int pages;
+    std::string isbn;
+};
 
-// TODO: Write the Book struct here
-// struct Book { ... };
-
-void print_book(int index, const char* title, const char* author, int year, int pages, const char* isbn) {
-    cout << "Book[" << index << "]: "
-         << "title=" << title << ", "
-         << "author=" << author << ", "
-         << "year=" << year << ", "
-         << "pages=" << pages << ", "
-         << "isbn=" << isbn << "\n";
+// Output function as provided
+void print_book(int index, const char* title, const char* author,
+                int year, int pages, const char* isbn) {
+    std::cout << "Book[" << index << "]: "
+              << "title=" << title << ", "
+              << "author=" << author << ", "
+              << "year=" << year << ", "
+              << "pages=" << pages << ", "
+              << "isbn=" << isbn << "\n";
 }
 
-int main(int argc, char* argv[]) {
-    if (argc < 2) {
-        cerr << "Usage: " << argv[0] << " <input_file>" << endl;
-        return 1;
-    }
+int main() {
+    std::ifstream infile("books.txt");  // Input file
 
-    ifstream input(argv[1]);
-    if (!input) {
-        cerr << "Error opening " << argv[1] << endl;
+    if (!infile) {
+        std::cerr << "Error opening file.\n";
         return 1;
     }
 
     int num_books;
-    input >> num_books;
-    input.ignore(); // skip newline
+    infile >> num_books;
+    infile.ignore(); // To skip newline after number
 
-    // TODO: Create array of Book
-    // Book books[10];
+    // Create a dynamic array of books
+    Book* books = new Book[num_books];
 
-    // TODO: Read books from input
-    // for (int i = 0; i < num_books; i++) { ... }
+    for (int i = 0; i < num_books; ++i) {
+        std::getline(infile, books[i].title);
+        std::getline(infile, books[i].author);
+        infile >> books[i].year;
+        infile >> books[i].pages;
+        infile.ignore(); // Skip newline
+        std::getline(infile, books[i].isbn);
+    }
 
-    // TODO: Print books using print_book
-    // for (int i = 0; i < num_books; i++) { ... }
+    // Print books using the output function
+    for (int i = 0; i < num_books; ++i) {
+        print_book(i,
+                   books[i].title.c_str(),
+                   books[i].author.c_str(),
+                   books[i].year,
+                   books[i].pages,
+                   books[i].isbn.c_str());
+    }
 
+    delete[] books; // Free allocated memory
     return 0;
 }
+
