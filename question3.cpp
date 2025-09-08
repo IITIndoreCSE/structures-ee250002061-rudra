@@ -8,6 +8,7 @@ struct Point {
     double y;
 };
 
+// Function to print point before and after rotation with fixed precision
 void print_point_rotation(double x_before, double y_before,
                           double theta, double x_after, double y_after) {
     std::cout << std::fixed << std::setprecision(4);
@@ -16,6 +17,7 @@ void print_point_rotation(double x_before, double y_before,
               << "(x=" << x_after << ", y=" << y_after << ")\n";
 }
 
+// Rotate point p around pivot by angle theta (radians)
 Point rotate_point(const Point& p, const Point& pivot, double theta) {
     Point rotated;
     rotated.x = pivot.x + (p.x - pivot.x) * std::cos(theta) - (p.y - pivot.y) * std::sin(theta);
@@ -33,6 +35,7 @@ int main() {
     Point p, pivot;
     double theta;
 
+    // Input format: x y theta pivot_x pivot_y (each on separate lines)
     infile >> p.x >> p.y >> theta >> pivot.x >> pivot.y;
 
     Point p_rotated = rotate_point(p, pivot, theta);
@@ -41,4 +44,3 @@ int main() {
 
     return 0;
 }
-
