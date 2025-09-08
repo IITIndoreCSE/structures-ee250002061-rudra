@@ -1,60 +1,46 @@
 #include <iostream>
 #include <fstream>
-#include <cstring>
-
+#include <string>
 using namespace std;
 
-//  Define the Book struct
 struct Book {
-    char title[100];
-    char author[100];
+    string title;
+    string author;
     int year;
     int pages;
-    char isbn[20];
+    string isbn;
 };
 
-void print_book(int index, const char* title, const char* author, int year, int pages, const char* isbn) {
-    cout << "Book[" << index << "]: "
-         << "title=" << title << ", "
-         << "author=" << author << ", "
-         << "year=" << year << ", "
-         << "pages=" << pages << ", "
-         << "isbn=" << isbn << "\n";
+void print_book(int index, const Book &book) {
+    cout << "Book[" << index << "]:\n"
+         << " title=" << book.title << ",\n"
+         << " author=" << book.author << ",\n"
+         << " year=" << book.year << ",\n"
+         << " pages=" << book.pages << ",\n"
+         << " isbn=" << book.isbn << "\n";
 }
 
 int main(int argc, char* argv[]) {
     if (argc < 2) {
-        cerr << "Usage: " << argv[0] << " <input_file>" << endl;
+        cerr << "usage: " << argv[0] << " <input_file>" << endl;
         return 1;
     }
 
     ifstream input(argv[1]);
     if (!input) {
-        cerr << "Error opening " << argv[1] << endl;
+        cerr << "Error opening file " << argv[1] << endl;
         return 1;
     }
 
-    int num_books;
-    input >> num_books;
-    input.ignore(); // skip newline after number
+    Book book;
+    int index = 0;
 
-    // Create array of Book
-    Book books[10];
-
-    // read books from input
-    for (int i = 0; i < num_books; i++) {
-        input.getline(books[i].title, 100);
-        input.getline(books[i].author, 100);
-        input >> books[i].year;
-        input >> books[i].pages;
-        input.ignore(); // skip newline
-        input.getline(books[i].isbn, 20);
+    // Expected file format: title author year pages isbn (all separated by whitespace)
+    while (input >> book.title >> book.author >> book.year >> book.pages >> book.isbn) {
+        print_book(index++, book);
     }
 
-    //  Print books using print_book
-    for (int i = 0; i < num_books; i++) {
-        print_book(i, books[i].title, books[i].author, books[i].year, books[i].pages, books[i].isbn);
-    }
-
+    input.close();
     return 0;
 }
+
