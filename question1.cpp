@@ -1,46 +1,60 @@
 #include <iostream>
 #include <fstream>
-#include <string>
+#include <cstring>
+
 using namespace std;
 
+// ✅ Define the Book struct
 struct Book {
-    string title;
-    string author;
+    char title[100];
+    char author[100];
     int year;
     int pages;
-    string isbn;
+    char isbn[20];
 };
 
-void print_book(int index, const Book &book) {
-    cout << "Book[" << index << "]:\n"
-         << " title=" << book.title << ",\n"
-         << " author=" << book.author << ",\n"
-         << " year=" << book.year << ",\n"
-         << " pages=" << book.pages << ",\n"
-         << " isbn=" << book.isbn << "\n";
+void print_book(int index, const char* title, const char* author, int year, int pages, const char* isbn) {
+    cout << "Book[" << index << "]: "
+         << "title=" << title << ", "
+         << "author=" << author << ", "
+         << "year=" << year << ", "
+         << "pages=" << pages << ", "
+         << "isbn=" << isbn << "\n";
 }
 
 int main(int argc, char* argv[]) {
     if (argc < 2) {
-        cerr << "usage: " << argv[0] << " <input_file>" << endl;
+        cerr << "Usage: " << argv[0] << " <input_file>" << endl;
         return 1;
     }
 
     ifstream input(argv[1]);
     if (!input) {
-        cerr << "Error opening file " << argv[1] << endl;
+        cerr << "Error opening " << argv[1] << endl;
         return 1;
     }
 
-    Book book;
-    int index = 0;
+    int num_books;
+    input >> num_books;
+    input.ignore(); // skip newline after number
 
-    // Expected file format: title author year pages isbn (all separated by whitespace)
-    while (input >> book.title >> book.author >> book.year >> book.pages >> book.isbn) {
-        print_book(index++, book);
+    // ✅ Create array of Book
+    Book books[10];
+
+    // ✅ Read books from input
+    for (int i = 0; i < num_books; i++) {
+        input.getline(books[i].title, 100);
+        input.getline(books[i].author, 100);
+        input >> books[i].year;
+        input >> books[i].pages;
+        input.ignore(); // skip newline
+        input.getline(books[i].isbn, 20);
     }
 
-    input.close();
+    // ✅ Print books using print_book
+    for (int i = 0; i < num_books; i++) {
+        print_book(i, books[i].title, books[i].author, books[i].year, books[i].pages, books[i].isbn);
+    }
+
     return 0;
 }
-
