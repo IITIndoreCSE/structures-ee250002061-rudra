@@ -31,7 +31,7 @@ void print_point_rotation(double x_before, double y_before,
 
 int main(int argc, char* argv[]) {
     if (argc < 2) {
-        cerr << "Usage: " << argv[0] << " <input_file>" << endl;
+        cerr << "Usage: " << argv[0] << " <input_file>\n" << endl;
         return 1;
     }
 
